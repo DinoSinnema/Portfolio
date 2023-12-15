@@ -1,0 +1,23 @@
+Pulled public data from a business and showed...
+
+1. How much revenue each product generates a month
+2. Which product had the most success throughout all of last year
+3. How consistent were the sales of each product month to month
+
+with monthly_rev as (
+SELECT date_trunc ('month',s.ORDERDATE) as ordermonth,
+p.productname,
+SUM(s.revenue) as revenue
+FROM subscriptions s
+JOIN products p ON p.PRODUCTID = s.PRODUCTID
+WHERE s.ORDERDATE BETWEEN '2022-01-01' AND '2022-12-31'
+GROUP BY p.PRODUCTNAME, ordermonth)
+
+SELECT
+PRODUCTNAME,
+min(REVENUE) AS min_rev,
+max(REVENUE) AS max_rev,
+avg(REVENUE) AS avg_rev,
+stddev(REVENUE) AS std_dev_rev
+FROM monthly_rev
+GROUP BY PRODUCTNAME;
