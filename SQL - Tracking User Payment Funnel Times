@@ -1,0 +1,17 @@
+
+
+SELECT
+  statusmovementid,
+  statusid,
+  movementdate,
+  lead(movementdate, 1)
+  over(partition by subscriptionid order by movementdate)
+  as nextstatusmovementdate,
+  lead(movementdate, 1)
+  over(partition by subscriptionid order by movementdate) - movementdate as timeinstatus
+
+FROM
+paymentstatuslog
+WHERE
+subscriptionid = '38844';
+
