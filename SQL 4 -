@@ -1,0 +1,21 @@
+Wrote a query to show how many times an email link was clicked and how many users clicked once, twice etc..
+
+with clicks AS (
+
+SELECT 
+    userid,
+    count(eventid) AS link_clicks
+FROM 
+    frontendeventlog
+WHERE 
+    eventid = 5
+group by 
+    userid)
+
+SELECT
+    count(userid) AS num_users,
+    link_clicks AS num_link_clicks
+FROM 
+    clicks
+group by 
+    link_clicks;
