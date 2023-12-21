@@ -1,0 +1,19 @@
+An email to all sales department managers was needed. Self-joined the employees table to find the name and email of the managers of each employee. 
+Goal was to send an email to every employee’s manager about changes, but some employee ID had no managers. 
+Used the COALESCE function to pick the managers employee ID email whenever the email was listed as null. Very confusing.
+
+-- SQL request(s)​​​​​​‌​‌​‌​​​‌‌​​‌​​​‌​‌‌​​​‌‌ below
+SELECT 
+    s.SalesEmployeeid,
+    s.Saledate,
+    s.Saleamount,
+    sum(Saleamount) over(partition by SALESEMPLOYEEID 
+    order by saledate asc) as running_total,
+
+    cast(sum(Saleamount) over(partition by SALESEMPLOYEEID 
+    order by saledate) as float)/quota as percent_quota
+FROM
+    Sales s
+JOIN
+    Employees e
+ON s.salesemployeeid = e.employeeid;
