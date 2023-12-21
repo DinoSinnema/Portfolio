@@ -1,3 +1,33 @@
 Wrote multiple CTE to showcase where in the payment process most of the customers are stopping at. Cased each payment status code to describe the payment process it was affiliated with, 
 wrote another CTE for all the unique customer ID's and joined the two tables together. Aggregated the max status for each customer using these CTE's.
 
+with table1 AS (
+SELECT DISTINCT
+subscriptionid,
+max(statusid) as maxstatus
+FROM paymentstatuslog
+group by subscriptionid)
+
+,
+
+paymentfunnelstages as (
+SELECT
+subs.subscriptionid,
+case when maxstatus = 1 then 'PaymentWidgetOpened'
+		when maxstatus = 2 then 'PaymentEntered'
+		when maxstatus = 3 and currentstatus = 0 then 'User Error with Payment Submission'
+		when maxstatus = 3 and currentstatus != 0 then 'Payment Submitted'
+		when maxstatus = 4 and currentstatus = 0 then 'Payment Processing Error with Vendor'
+		when maxstatus = 4 and currentstatus != 0 then 'Payment Success'
+		when maxstatus = 5 then 'Complete'
+		when maxstatus is null then 'User did not start payment process'
+		end as paymentfunnelstage
+FROM subscriptions subs
+LEFT JOIN table1
+USING (SUBSCRIPTIONID))
+
+SELECT 
+paymentfunnelstage,
+count(subscriptionid) as subscriptions
+from paymentfunnelstages
+group by paymentfunnelstage;
