@@ -1,0 +1,38 @@
+Wrote a CTE to combine all cancelation reason then wrote an aggregate function to sum up this number. 
+After this I divided it by the total number of cancelled subscriptions to determine how many were due to the cost of the subscription. 
+Had to use UNION (instead of UNION ALL since options could be double counted) and combine multiple tables since there were 3 options for cancelation reasons.
+Converted the numerator to a decimal with float and found the percentage that cancelled due to cost.
+
+-- SQL request(s)​​​​​​‌​‌​‌​​​‌‌​​​‌​‌‌​​‌‌‌‌‌​ below
+with all_cancelation_reasons as(
+
+select 
+        subscriptionid,
+        cancelationreason1 as cancelationreason
+from cancelations
+
+union
+
+select 
+        subscriptionid,
+        cancelationreason2 as cancelationreason
+from cancelations
+
+union
+
+select 
+        subscriptionid,
+        cancelationreason3 as cancelationreason
+from cancelations
+
+
+)
+
+select 
+    cast(count(
+        case when cancelationreason = 'Expensive' 
+        then subscriptionid end) as float)
+    /count(distinct subscriptionid) as percent_expensive
+from    
+    all_cancelation_reasons
+;
