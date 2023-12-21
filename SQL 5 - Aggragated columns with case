@@ -1,0 +1,3 @@
+Wrote multiple CTE to showcase where in the payment process most of the customers are stopping at. Cased each payment status code to describe the payment process it was affiliated with, 
+wrote another CTE for all the unique customer ID's and joined the two tables together. Aggregated the max status for each customer using these CTE's.
+
