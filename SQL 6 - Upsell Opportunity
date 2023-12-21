@@ -1,0 +1,12 @@
+Wrote a query to determine if customers met 1 of 2 criteria needed to pitch a product. If customer met criteria they were labeled as 1 and 0 if not to simplify it.
+
+
+SELECT customerid,
+count(productid) as num_products,
+sum(numberofusers) as total_users,
+case
+when count(PRODUCTID) <= 1 or sum(NUMBEROFUSERS) > 5000 then 1
+else 0
+end as upsell_opportunity
+FROM subscriptions subs
+group by customerid;
