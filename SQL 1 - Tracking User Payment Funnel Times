@@ -1,4 +1,4 @@
-
+Pulled payment funnel data for each timestamp status to calculate how long each user was in each status before moving to the next.
 
 SELECT
   statusmovementid,
